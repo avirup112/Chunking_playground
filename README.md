@@ -109,14 +109,6 @@ chunking_playground/
     └── vectorstores/          # Local vector databases
 ```
 
-## 🔧 Configuration
-
-### Environment Variables
-```bash
-# Optional: Set default OpenAI API key
-export OPENAI_API_KEY="your-api-key-here"
-```
-
 ### Customization
 Edit `config.py` to modify:
 - Default chunk sizes and parameters
