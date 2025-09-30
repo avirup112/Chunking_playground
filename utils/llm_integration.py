@@ -16,7 +16,7 @@ class LLMManager:
     def generate_answer(self, query: str, retrieved_chunks: List[Dict[str, Any]], model: str = "llama-3.1-8b-instant") -> str:
         """Generate answer using LLM with retrieved chunks as context."""
         if not self.is_available():
-            return "OpenAI API key not provided. Please enter your API key in the sidebar."
+            return "API key not provided. Please enter your API key in the sidebar."
         
         # Prepare context from retrieved chunks
         context = "\n\n".join([

@@ -8,9 +8,9 @@ def render_sidebar():
     # API Key Section
     st.sidebar.subheader("🔑 API Configuration")
     openai_api_key = st.sidebar.text_input(
-        "OpenAI API Key",
+        "API Key",
         type="password",
-        placeholder="sk-...",
+        placeholder="Enter your API Key",
         help="Enter your OpenAI API key for LLM features (optional)"
     )
     
