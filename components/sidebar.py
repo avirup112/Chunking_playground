@@ -7,19 +7,39 @@ def render_sidebar():
     
     # API Key Section
     st.sidebar.subheader("🔑 API Configuration")
-    openai_api_key = st.sidebar.text_input(
-        "API Key",
-        type="password",
-        placeholder="Enter your API Key",
-        help="Enter your OpenAI API key for LLM features (optional)"
+    
+    # LLM Provider Selection
+    llm_provider = st.sidebar.selectbox(
+        "LLM Provider",
+        options=["Groq", "OpenAI"],
+        index=0,
+        help="Choose your preferred LLM provider"
     )
     
-    # Store API key in session state
-    if openai_api_key:
-        st.session_state.openai_api_key = openai_api_key
-        st.sidebar.success("API Key provided")
+    if llm_provider == "Groq":
+        api_key = st.sidebar.text_input(
+            "Groq API Key",
+            type="password",
+            placeholder="gsk_...",
+            help="Enter your Groq API key for fast LLM responses (free tier available)"
+        )
+        api_key_type = "groq"
     else:
-        st.sidebar.info("Enter API key to enable LLM features")
+        api_key = st.sidebar.text_input(
+            "OpenAI API Key",
+            type="password",
+            placeholder="sk-...",
+            help="Enter your OpenAI API key for LLM features"
+        )
+        api_key_type = "openai"
+    
+    # Store API key in session state
+    if api_key:
+        st.session_state.api_key = api_key
+        st.session_state.api_key_type = api_key_type
+        st.sidebar.success(f"✅ {llm_provider} API Key provided")
+    else:
+        st.sidebar.info("ℹ️ Enter API key to enable LLM features")
     
     st.sidebar.divider()
     
@@ -132,5 +152,6 @@ def render_sidebar():
         "lambda_param": lambda_param,
         "initial_k": initial_k,
         "compare_strategies": compare_strategies,
-        "openai_api_key": openai_api_key
+        "api_key": api_key,
+        "api_key_type": api_key_type
     }

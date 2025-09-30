@@ -1,22 +1,36 @@
 import streamlit as st
 from typing import List, Dict, Any, Optional
-from groq import Groq 
+from groq import Groq
+import openai
+from openai import OpenAI
 
 class LLMManager:
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None, provider: str = "groq"):
         self.api_key = api_key
+        self.provider = provider.lower()
         self.client = None
+        
         if api_key:
-            self.client = Groq(api_key=api_key)
+            if self.provider == "groq":
+                self.client = Groq(api_key=api_key)
+            elif self.provider == "openai":
+                self.client = OpenAI(api_key=api_key)
     
     def is_available(self) -> bool:
         """Check if LLM is available (API key provided)."""
         return self.client is not None
     
-    def generate_answer(self, query: str, retrieved_chunks: List[Dict[str, Any]], model: str = "llama-3.1-8b-instant") -> str:
+    def generate_answer(self, query: str, retrieved_chunks: List[Dict[str, Any]], model: str = None) -> str:
         """Generate answer using LLM with retrieved chunks as context."""
         if not self.is_available():
-            return "API key not provided. Please enter your API key in the sidebar."
+            return "❌ API key not provided. Please enter your API key in the sidebar."
+        
+        # Set default model based on provider
+        if model is None:
+            if self.provider == "groq":
+                model = "llama-3.1-8b-instant"
+            else:  # openai
+                model = "gpt-3.5-turbo"
         
         # Prepare context from retrieved chunks
         context = "\n\n".join([
@@ -50,12 +64,12 @@ Answer:"""
             return response.choices[0].message.content.strip()
         
         except Exception as e:
-            return f"Error generating answer: {str(e)}"
+            return f"❌ Error generating answer: {str(e)}"
     
     def compare_answers(self, query: str, strategies_results: Dict[str, List[Dict[str, Any]]]) -> Dict[str, str]:
         """Generate answers using different retrieval strategies for comparison."""
         if not self.is_available():
-            return {"error": "OpenAI API key not provided"}
+            return {"error": "API key not provided"}
         
         answers = {}
         for strategy, chunks in strategies_results.items():

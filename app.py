@@ -88,7 +88,7 @@ def main():
                 similarity_threshold=config["similarity_threshold"],
                 sentences_per_chunk=config["sentences_per_chunk"],
                 num_topics=config["num_topics"],
-                api_key=config.get("openai_api_key")
+                api_key=config.get("api_key")
             )
             st.session_state.chunks = chunks
         
@@ -111,7 +111,10 @@ def main():
                 retriever.setup_faiss(chunks)  # These use FAISS as base
         
         # Initialize LLM manager
-        llm_manager = LLMManager(config.get("openai_api_key"))
+        llm_manager = LLMManager(
+            api_key=config.get("api_key"),
+            provider=config.get("api_key_type", "groq")
+        )
         
         # Query interface
         query, search_button, llm_button = display_query_interface()
@@ -138,7 +141,8 @@ def main():
                     answer = llm_manager.generate_answer(query, results)
                 display_llm_answer(answer, results)
             elif llm_button and not llm_manager.is_available():
-                st.warning("⚠️ Please enter your OpenAI API key in the sidebar to use LLM features.")
+                provider_name = config.get("api_key_type", "Groq").title()
+                st.warning(f"⚠️ Please enter your {provider_name} API key in the sidebar to use LLM features.")
             
             # Comparison mode
             if config["compare_strategies"]:
