@@ -1,5 +1,5 @@
 from typing import List, Dict, Any, Optional
-from langchain_text_splitter import (
+from langchain_text_splitters import (
     CharacterTextSplitter,
     RecursiveCharacterTextSplitter,
     SentenceTransformersTokenTextSplitter
